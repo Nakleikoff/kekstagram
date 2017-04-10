@@ -21,7 +21,7 @@ var getRandomItem = function (list) {
   if (!list || !list.length) {
     return null;
   }
-  return list[Math.round(Math.random() * (list.length - 1))];
+  return list[Math.floor(Math.random() * list.length)];
 };
 
 var getRandomComments = function (number) {
