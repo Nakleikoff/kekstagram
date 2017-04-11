@@ -13,12 +13,18 @@ var NUMBER_OF_PICTURES = 25;
 var ESC_KEY_CODE = 27;
 var ENTER_KEY_CODE = 13;
 
-document.querySelector('.upload-overlay').classList.add('invisible');
+var gallery = document.querySelector('.gallery-overlay');
+var galleryClose = gallery.querySelector('.gallery-overlay-close');
 
-var galleryOverlay = document.querySelector('.gallery-overlay');
-var galleryClose = document.querySelector('.gallery-overlay-close');
 var picturesContainer = document.querySelector('.pictures');
 var pictureTemplate = document.querySelector('#picture-template').content;
+
+var upload = document.querySelector('.upload');
+var uploadForm = upload.querySelector('.upload-form');
+var uploadFileInput = uploadForm.querySelector('#upload-file');
+var uploadCrop = upload.querySelector('.upload-overlay');
+var uploadCropCancel = uploadCrop.querySelector('.upload-form-cancel');
+var uploadCropSubmit = uploadCrop.querySelector('.upload-form-submit');
 
 var getRandomItem = function (list) {
   return list[Math.floor(Math.random() * list.length)];
@@ -70,9 +76,9 @@ var setGalleryPicture = function (i) {
   if (!pictures[i]) {
     return false;
   }
-  galleryOverlay.querySelector('.gallery-overlay-image').src = pictures[i].url;
-  galleryOverlay.querySelector('.likes-count').textContent = pictures[i].likes;
-  galleryOverlay.querySelector('.comments-count').textContent = pictures[i].comments.length;
+  gallery.querySelector('.gallery-overlay-image').src = pictures[i].url;
+  gallery.querySelector('.likes-count').textContent = pictures[i].likes;
+  gallery.querySelector('.comments-count').textContent = pictures[i].comments.length;
   return true;
 };
 
@@ -83,12 +89,12 @@ var onGalleryEscPress = function (evt) {
 };
 
 var openGallery = function () {
-  galleryOverlay.classList.remove('invisible');
+  gallery.classList.remove('invisible');
   document.addEventListener('keydown', onGalleryEscPress);
 };
 
 var closeGallery = function () {
-  galleryOverlay.classList.add('invisible');
+  gallery.classList.add('invisible');
   document.removeEventListener('keydown', onGalleryEscPress);
 };
 
@@ -112,3 +118,39 @@ galleryClose.addEventListener('keydown', function (evt) {
     closeGallery();
   }
 });
+
+var onUploadCropEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEY_CODE) {
+    closeUploadCrop();
+  }
+};
+
+var openUploadForm = function () {
+  uploadForm.classList.remove('invisible');
+};
+
+var openUploadCrop = function () {
+  uploadCrop.classList.remove('invisible');
+  document.addEventListener('keydown', onUploadCropEscPress);
+};
+
+var closeUploadCrop = function () {
+  uploadCrop.classList.add('invisible');
+  document.removeEventListener('keydown', onUploadCropEscPress);
+};
+
+uploadFileInput.addEventListener('change', function () {
+  openUploadCrop();
+});
+
+uploadCropCancel.addEventListener('click', function () {
+  closeUploadCrop();
+});
+
+uploadCropSubmit.addEventListener('click', function (evt) {
+  evt.preventDefault();
+  closeUploadCrop();
+});
+
+closeUploadCrop();
+openUploadForm();
