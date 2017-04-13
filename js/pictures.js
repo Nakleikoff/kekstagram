@@ -31,17 +31,6 @@ var galleryClose = gallery.querySelector('.gallery-overlay-close');
 var picturesContainer = document.querySelector('.pictures');
 var pictureTemplate = document.querySelector('#picture-template').content;
 
-var upload = document.querySelector('.upload');
-var uploadForm = upload.querySelector('.upload-form');
-var uploadFileInput = uploadForm.querySelector('#upload-file');
-var uploadCrop = upload.querySelector('.upload-overlay');
-var uploadCropCancel = uploadCrop.querySelector('.upload-form-cancel');
-var uploadCropSubmit = uploadCrop.querySelector('.upload-form-submit');
-
-var uploadPreview = uploadCrop.querySelector('.filter-image-preview');
-var uploadFilters = uploadCrop.querySelector('.upload-filter-controls');
-var currentFilter;
-
 /**
  * Получить случайный элемент массива
  * @param {Array} list - массив
@@ -158,81 +147,32 @@ var closeGallery = function () {
 };
 
 /**
- * Нажать ESC на форме редактирования изображения
- * @param {KeyboardEvent} evt - событие
+ * Инициализировать галерею
  */
-var onUploadCropEscPress = function (evt) {
-  if (evt.keyCode === ESC_KEY_CODE && evt.target.tagName !== 'TEXTAREA') {
-    closeUploadCrop();
-  }
+var initGallery = function () {
+  renderPicturesList(generatePicturesList(NUMBER_OF_PICTURES));
+  galleryClose.addEventListener('click', function () {
+    closeGallery();
+  });
 };
 
 /**
- * Открыть форму загрузки
+ * Минимальная длина комментария
+ * @constant {number}
  */
-var openUploadForm = function () {
-  uploadForm.classList.remove('invisible');
-};
+var COMMENT_MIN_LENGTH = 30;
 
 /**
- * Открыть форму редактирования изображения
+ * Максимальная длина комментария
+ * @constant {number}
  */
-var openUploadCrop = function () {
-  uploadCrop.classList.remove('invisible');
-  document.addEventListener('keydown', onUploadCropEscPress);
-};
+var COMMENT_MAX_LENGTH = 100;
 
 /**
- * Закрыть форму редактирования изображения
+ * Значение по умолчанию для масштаба изображения
+ * @constant {number}
  */
-var closeUploadCrop = function () {
-  uploadCrop.classList.add('invisible');
-  document.removeEventListener('keydown', onUploadCropEscPress);
-};
-
-galleryClose.addEventListener('click', function () {
-  closeGallery();
-});
-
-uploadFileInput.addEventListener('change', function () {
-  openUploadCrop();
-});
-
-uploadCropCancel.addEventListener('click', function () {
-  closeUploadCrop();
-});
-
-uploadCropSubmit.addEventListener('click', function (evt) {
-  evt.preventDefault();
-  closeUploadCrop();
-});
-
-renderPicturesList(generatePicturesList(NUMBER_OF_PICTURES));
-closeUploadCrop();
-openUploadForm();
-
-/**
- * Применить фильтр к изображению
- * @param {string} filter - выбранный фильтр
- */
-var applyFilter = function (filter) {
-  if (currentFilter) {
-    uploadPreview.classList.remove(currentFilter);
-  }
-  currentFilter = 'filter-' + filter;
-  uploadPreview.classList.add(currentFilter);
-};
-
-/**
- * Изменить фильтр
- * @param {Event} evt - событие
- */
-var onFilterChange = function (evt) {
-  applyFilter(evt.target.value);
-};
-
-uploadFilters.addEventListener('change', onFilterChange);
-
+var FILTER_DEFAULT = 'none';
 
 /**
  * Минимальное значение масштаба изображения
@@ -258,9 +198,80 @@ var RESIZE_STEP = 25;
  */
 var RESIZE_DEFAULT = 100;
 
+var upload = document.querySelector('.upload');
+var uploadForm = upload.querySelector('.upload-form');
+var uploadFileInput = uploadForm.querySelector('#upload-file');
+var uploadCrop = upload.querySelector('.upload-overlay');
+var uploadCropCancel = uploadCrop.querySelector('.upload-form-cancel');
+var uploadCropSubmit = uploadCrop.querySelector('.upload-form-submit');
+
+var uploadComment = uploadCrop.querySelector('.upload-form-description');
+
+var uploadPreview = uploadCrop.querySelector('.filter-image-preview');
+var uploadFilters = uploadCrop.querySelector('.upload-filter-controls');
+var currentFilter;
+
 var resizeValue = uploadCrop.querySelector('.upload-resize-controls-value');
 var resizeInc = uploadCrop.querySelector('.upload-resize-controls-button-inc');
 var resizeDec = uploadCrop.querySelector('.upload-resize-controls-button-dec');
+
+/**
+ * Нажать ESC на форме редактирования изображения
+ * @param {KeyboardEvent} evt - событие
+ */
+var onUploadCropEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEY_CODE && evt.target.tagName !== 'TEXTAREA') {
+    closeUploadCrop();
+  }
+};
+
+/**
+ * Открыть форму редактирования изображения
+ */
+var openUploadCrop = function () {
+  uploadCrop.classList.remove('invisible');
+  document.addEventListener('keydown', onUploadCropEscPress);
+};
+
+/**
+ * Закрыть форму редактирования изображения
+ */
+var closeUploadCrop = function () {
+  uploadCrop.classList.add('invisible');
+  document.removeEventListener('keydown', onUploadCropEscPress);
+};
+
+/**
+ * Применить фильтр к изображению
+ * @param {string} filter - выбранный фильтр
+ */
+var applyFilter = function (filter) {
+  if (currentFilter) {
+    uploadPreview.classList.remove(currentFilter);
+  }
+  currentFilter = 'filter-' + filter;
+  uploadPreview.classList.add(currentFilter);
+};
+
+/**
+ * Сбросить фильтр изображения
+ */
+var resetFilter = function () {
+  if (!currentFilter) {
+    return;
+  }
+  uploadPreview.classList.remove(currentFilter);
+  currentFilter = null;
+  uploadFilters.querySelector('#upload-filter-' + FILTER_DEFAULT).checked = true;
+};
+
+/**
+ * Изменить фильтр
+ * @param {Event} evt - событие
+ */
+var onFilterChange = function (evt) {
+  applyFilter(evt.target.value);
+};
 
 /**
  * Получить масштаб изображения
@@ -298,5 +309,85 @@ var onResizeDecClick = function () {
   resizeImage(value);
 };
 
-resizeInc.addEventListener('click', onResizeIncClick);
-resizeDec.addEventListener('click', onResizeDecClick);
+/**
+ * Сбросить масштабирование изображения
+ */
+var resetResize = function () {
+  resizeValue.value = RESIZE_DEFAULT + '%';
+  resizeImage(RESIZE_DEFAULT);
+};
+
+/**
+ * Сбросить данные формы редактирования
+ */
+var resetForm = function () {
+  resetFilter();
+  resetResize();
+};
+
+/**
+ * Проверить валидность масштаба
+ * @return {boolean}
+ */
+var isResizeValid = function () {
+  var value = getResizeValue();
+  return value >= RESIZE_MIN && value <= RESIZE_MAX;
+};
+
+/**
+ * Проверить валидность комментария
+ * @return {boolean}
+ */
+var isCommentValid = function () {
+  var length = uploadComment.value.length;
+  return length >= COMMENT_MIN_LENGTH && length <= COMMENT_MAX_LENGTH;
+};
+
+/**
+ * Проверить валидность формы
+ * @return {boolean}
+ */
+var isUploadFormValid = function () {
+  var valid = true;
+  if (isCommentValid()) {
+    uploadComment.classList.remove('upload-form-error');
+  } else {
+    valid = false;
+    uploadComment.classList.add('upload-form-error');
+  }
+  if (isResizeValid()) {
+    resizeValue.classList.remove('upload-form-error');
+  } else {
+    valid = false;
+    resizeValue.classList.add('upload-form-error');
+  }
+  return valid;
+};
+
+var initUploadForm = function () {
+  uploadFileInput.addEventListener('change', function () {
+    openUploadCrop();
+  });
+
+  uploadCropCancel.addEventListener('click', function () {
+    closeUploadCrop();
+  });
+
+  uploadCropSubmit.addEventListener('click', function (evt) {
+    if (isUploadFormValid()) {
+      resetForm();
+      closeUploadCrop();
+    }
+  });
+
+  uploadFilters.addEventListener('change', onFilterChange);
+
+  resizeInc.addEventListener('click', onResizeIncClick);
+  resizeDec.addEventListener('click', onResizeDecClick);
+
+  uploadForm.classList.remove('invisible');
+  closeUploadCrop();
+};
+
+initGallery();
+initUploadForm();
