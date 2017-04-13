@@ -321,6 +321,7 @@ var resetResize = function () {
  * Сбросить данные формы редактирования
  */
 var resetForm = function () {
+  resetComment();
   resetFilter();
   resetResize();
 };
@@ -341,6 +342,13 @@ var isResizeValid = function () {
 var isCommentValid = function () {
   var length = uploadComment.value.length;
   return length >= COMMENT_MIN_LENGTH && length <= COMMENT_MAX_LENGTH;
+};
+
+/**
+ * Сбросить текст комментария
+ */
+var resetComment = function () {
+  uploadComment.value = '';
 };
 
 /**
@@ -374,6 +382,7 @@ var initUploadForm = function () {
   });
 
   uploadCropSubmit.addEventListener('click', function (evt) {
+    evt.preventDefault();
     if (isUploadFormValid()) {
       resetForm();
       closeUploadCrop();
