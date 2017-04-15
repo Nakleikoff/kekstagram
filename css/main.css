@@ -405,6 +405,10 @@ input[type=radio]:checked + .upload-filter-label .upload-filter-preview {
   color: #000;
 }
 
+.upload-form-error {
+  border: 3px solid red;
+}
+
 /* Кнопка отправки */
 .upload-form-submit {
   padding: 0 20px;
