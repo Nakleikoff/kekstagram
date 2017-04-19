@@ -6,12 +6,6 @@
  * @param {Object} picture - событие
  */
 window.onGalleryOpenerClick = (function () {
-  /**
-   * Код клавишы ESC
-   * @constant {number}
-   */
-  var ESC_KEY_CODE = 27;
-
   var gallery = document.querySelector('.gallery-overlay');
   var galleryClose = gallery.querySelector('.gallery-overlay-close');
 
@@ -31,7 +25,7 @@ window.onGalleryOpenerClick = (function () {
    * @param {KeyboardEvent} evt - событие
    */
   var onGalleryEscPress = function (evt) {
-    if (evt.keyCode === ESC_KEY_CODE) {
+    if (evt.keyCode === window.utils.ESC_KEY_CODE) {
       closeGallery();
     }
   };

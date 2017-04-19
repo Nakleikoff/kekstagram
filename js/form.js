@@ -2,12 +2,6 @@
 
 (function () {
   /**
-   * Код клавишы ESC
-   * @constant {number}
-   */
-  var ESC_KEY_CODE = 27;
-
-  /**
    * Минимальная длина комментария
    * @constant {number}
    */
@@ -71,7 +65,7 @@
    * @param {KeyboardEvent} evt - событие
    */
   var onUploadCropEscPress = function (evt) {
-    if (evt.keyCode === ESC_KEY_CODE && evt.target.tagName !== 'TEXTAREA') {
+    if (evt.keyCode === window.utils.ESC_KEY_CODE && evt.target.tagName !== 'TEXTAREA') {
       closeUploadCrop();
     }
   };
