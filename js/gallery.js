@@ -7,5 +7,7 @@
    */
   var NUMBER_OF_PICTURES = 25;
 
-  window.renderPicturesList(window.generatePictures(NUMBER_OF_PICTURES));
+  var pictures = window.generatePictures(NUMBER_OF_PICTURES);
+
+  window.renderPicturesList(pictures, window.onGalleryOpenerClick);
 })();

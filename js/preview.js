@@ -1,6 +1,11 @@
 'use strict';
 
-window.preview = (function () {
+/**
+ * Нажать на элемент открывающий картинку
+ * @param {Event} evt - событие
+ * @param {Object} picture - событие
+ */
+window.onGalleryOpenerClick = (function () {
   /**
    * Код клавишы ESC
    * @constant {number}
@@ -47,12 +52,20 @@ window.preview = (function () {
     document.removeEventListener('keydown', onGalleryEscPress);
   };
 
+  /**
+   * Нажать на элемент открывающий картинку
+   * @param {Event} evt - событие
+   * @param {Object} picture - объект с данными фотографии
+   */
+  var onGalleryOpenerClick = function (evt, picture) {
+    evt.preventDefault();
+    setPictureToGallery(picture);
+    openGallery(picture);
+  };
+
   galleryClose.addEventListener('click', function () {
     closeGallery();
   });
 
-  return {
-    openGallery: openGallery,
-    setPictureToGallery: setPictureToGallery
-  };
+  return onGalleryOpenerClick;
 })();
