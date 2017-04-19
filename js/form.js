@@ -66,6 +66,8 @@ window.initUploadForm = (function () {
   var resizeInc = uploadCrop.querySelector('.upload-resize-controls-button-inc');
   var resizeDec = uploadCrop.querySelector('.upload-resize-controls-button-dec');
 
+  var intensityControl = uploadFilters.querySelector('.upload-filter-level-pin');
+  var intensityBar = uploadFilters.querySelector('.upload-filter-level-val');
   /**
    * Нажать ESC на форме редактирования изображения
    * @param {KeyboardEvent} evt - событие
@@ -90,38 +92,6 @@ window.initUploadForm = (function () {
   var closeUploadCrop = function () {
     uploadCrop.classList.add('invisible');
     document.removeEventListener('keydown', onUploadCropEscPress);
-  };
-
-  /**
-   * Применить фильтр к изображению
-   * @param {string} filter - выбранный фильтр
-   */
-  var applyFilter = function (filter) {
-    if (currentFilter) {
-      uploadPreview.classList.remove(currentFilter);
-    }
-    currentFilter = 'filter-' + filter;
-    uploadPreview.classList.add(currentFilter);
-  };
-
-  /**
-   * Сбросить фильтр изображения
-   */
-  var resetFilter = function () {
-    if (!currentFilter) {
-      return;
-    }
-    uploadPreview.classList.remove(currentFilter);
-    currentFilter = null;
-    uploadFilters.querySelector('#upload-filter-' + FILTER_DEFAULT).checked = true;
-  };
-
-  /**
-   * Изменить фильтр
-   * @param {Event} evt - событие
-   */
-  var onFilterChange = function (evt) {
-    applyFilter(evt.target.value);
   };
 
   /**
@@ -239,11 +209,113 @@ window.initUploadForm = (function () {
     }
   });
 
-  uploadFilters.addEventListener('change', onFilterChange);
 
   resizeInc.addEventListener('click', onResizeIncClick);
   resizeDec.addEventListener('click', onResizeDecClick);
 
   uploadForm.classList.remove('invisible');
-  closeUploadCrop();
+  //closeUploadCrop();
+  openUploadCrop();
+
+  var INTENSITY_DEFAULT = 100;
+  var INTENSITY_MIN = 0;
+  var INTENSITY_MAX = 100;
+
+  var intensityLine = uploadFilters.querySelector('.upload-filter-level-line');
+  var LINE_WIDTH = intensityLine.clientWidth;
+
+  var intensity = INTENSITY_DEFAULT;
+
+  var FILTERS_INTENSITY = {
+    chrome: function (element, value) {
+      element.style.filter = 'grayscale(' + value / 100 + ')';
+    },
+    sepia: function (element, value) {
+      element.style.filter = 'sepia(' + value / 100 + ')';
+    },
+    marvin: function (element, value) {
+      element.style.filter = 'invert(' + value + '%)';
+    },
+    phobos: function (element, value) {
+      element.style.filter = 'blur(' + value / 100 * 5 + 'px)';
+    },
+    heat: function (element, value) {
+      element.style.filter = 'brightness(' + value / 100 * 3 + ')';
+    },
+  };
+
+  /**
+   * Применить фильтр к изображению
+   * @param {string} filter - выбранный фильтр
+   */
+  var applyFilter = function (filter) {
+    if (currentFilter) {
+      uploadPreview.classList.remove('filter-' + filter);
+    }
+    currentFilter = filter;
+    uploadPreview.classList.add('filter-' + filter);
+    updateIntensityControl(INTENSITY_DEFAULT);
+    applyFilterIntensity(INTENSITY_DEFAULT);
+  };
+
+  /**
+   * Сбросить фильтр изображения
+   */
+  var resetFilter = function () {
+    if (!currentFilter) {
+      return;
+    }
+    uploadPreview.classList.remove('filter-' + currentFilter);
+    currentFilter = null;
+    uploadFilters.querySelector('#upload-filter-' + FILTER_DEFAULT).checked = true;
+  };
+
+  /**
+   * Изменить фильтр
+   * @param {Event} evt - событие
+   */
+  var onFilterChange = function (evt) {
+    applyFilter(evt.target.value);
+  };
+
+  var updateIntensityControl = function (value) {
+    intensityControl.style.left = value + '%';
+    intensityBar.style.width = value + '%';
+  };
+
+  var applyFilterIntensity = function (value) {
+    if (currentFilter && FILTERS_INTENSITY[currentFilter]) {
+      FILTERS_INTENSITY[currentFilter](uploadPreview, value);
+    }
+  };
+
+  intensityControl.addEventListener('mousedown', function (evt) {
+    evt.preventDefault();
+
+    var controlX = evt.clientX;
+
+    var onMouseMove = function (moveEvt) {
+      moveEvt.preventDefault();
+
+      var shiftX = controlX - moveEvt.clientX;
+      intensity = Math.min(Math.max(intensity - shiftX / LINE_WIDTH * 100, INTENSITY_MIN), INTENSITY_MAX);
+
+      controlX = moveEvt.clientX;
+      updateIntensityControl(intensity);
+      applyFilterIntensity(intensity);
+    };
+
+    var onMouseUp = function (upEvt) {
+      upEvt.preventDefault();
+
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
+
+  uploadFilters.addEventListener('change', onFilterChange);
+
 })();
