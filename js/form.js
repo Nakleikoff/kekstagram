@@ -1,6 +1,6 @@
 'use strict';
 
-window.initUploadForm = (function () {
+(function () {
   /**
    * Код клавишы ESC
    * @constant {number}
