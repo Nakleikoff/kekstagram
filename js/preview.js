@@ -1,11 +1,6 @@
 'use strict';
 
-/**
- * Нажать на элемент открывающий картинку
- * @param {Event} evt - событие
- * @param {Object} picture - событие
- */
-window.onGalleryOpenerClick = (function () {
+(function () {
   var gallery = document.querySelector('.gallery-overlay');
   var galleryClose = gallery.querySelector('.gallery-overlay-close');
 
@@ -46,20 +41,18 @@ window.onGalleryOpenerClick = (function () {
     document.removeEventListener('keydown', onGalleryEscPress);
   };
 
-  /**
-   * Нажать на элемент открывающий картинку
-   * @param {Event} evt - событие
-   * @param {Object} picture - объект с данными фотографии
-   */
-  var onGalleryOpenerClick = function (evt, picture) {
-    evt.preventDefault();
-    setPictureToGallery(picture);
-    openGallery(picture);
-  };
-
   galleryClose.addEventListener('click', function () {
     closeGallery();
   });
 
-  return onGalleryOpenerClick;
+  /**
+   * Обработать нажатие на элемент открывающий галерею
+   * @param {Event} evt - событие
+   * @param {Object} picture - объект с данными фотографии
+   */
+  window.onGalleryOpenerClick = function (evt, picture) {
+    evt.preventDefault();
+    setPictureToGallery(picture);
+    openGallery(picture);
+  };
 })();

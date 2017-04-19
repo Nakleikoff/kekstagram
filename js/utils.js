@@ -1,17 +1,17 @@
 'use strict';
 
-/**
- * Получить объект со вспомогательными утилитами
- * @return {Object} - объект со вспомогательными утилитами
- */
-window.utils = (function () {
+(function () {
   /**
    * Код клавишы ESC
    * @constant {number}
    */
   var ESC_KEY_CODE = 27;
 
-  return {
+  /**
+   * Объект со вспомогательными утилитами
+   * @type {Utils}
+   */
+  window.utils = {
     ESC_KEY_CODE: ESC_KEY_CODE
   };
 })();

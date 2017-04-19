@@ -1,6 +1,6 @@
 'use strict';
 
-window.renderPicturesList = (function () {
+(function () {
   var picturesContainer = document.querySelector('.pictures');
   var template = document.querySelector('#picture-template').content;
 
@@ -28,13 +28,11 @@ window.renderPicturesList = (function () {
    * @param {Array} pictures - массив с объектами данных о фотографиях
    * @param {Function} onPictureClick - функция, вызываемая по клику на картинку
    */
-  var renderPicturesList = function (pictures, onPictureClick) {
+  window.renderPicturesList = function (pictures, onPictureClick) {
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < pictures.length; i++) {
       fragment.appendChild(renderPicture(pictures[i], onPictureClick));
     }
     picturesContainer.appendChild(fragment);
   };
-
-  return renderPicturesList;
 })();
