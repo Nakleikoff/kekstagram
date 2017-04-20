@@ -1,12 +1,6 @@
 'use strict';
 
-window.initUploadForm = (function () {
-  /**
-   * Код клавишы ESC
-   * @constant {number}
-   */
-  var ESC_KEY_CODE = 27;
-
+(function () {
   /**
    * Минимальная длина комментария
    * @constant {number}
@@ -63,7 +57,7 @@ window.initUploadForm = (function () {
    * @param {KeyboardEvent} evt - событие
    */
   var onUploadCropEscPress = function (evt) {
-    if (evt.keyCode === ESC_KEY_CODE && evt.target.tagName !== 'TEXTAREA') {
+    if (evt.keyCode === window.utils.ESC_KEY_CODE && evt.target.tagName !== 'TEXTAREA') {
       closeUploadCrop();
     }
   };

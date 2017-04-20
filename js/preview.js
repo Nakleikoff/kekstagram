@@ -1,12 +1,6 @@
 'use strict';
 
-window.preview = (function () {
-  /**
-   * Код клавишы ESC
-   * @constant {number}
-   */
-  var ESC_KEY_CODE = 27;
-
+(function () {
   var gallery = document.querySelector('.gallery-overlay');
   var galleryClose = gallery.querySelector('.gallery-overlay-close');
 
@@ -26,7 +20,7 @@ window.preview = (function () {
    * @param {KeyboardEvent} evt - событие
    */
   var onGalleryEscPress = function (evt) {
-    if (evt.keyCode === ESC_KEY_CODE) {
+    if (evt.keyCode === window.utils.ESC_KEY_CODE) {
       closeGallery();
     }
   };
@@ -51,8 +45,14 @@ window.preview = (function () {
     closeGallery();
   });
 
-  return {
-    openGallery: openGallery,
-    setPictureToGallery: setPictureToGallery
+  /**
+   * Обработать нажатие на элемент открывающий галерею
+   * @param {Event} evt - событие
+   * @param {Object} picture - объект с данными фотографии
+   */
+  window.onGalleryOpenerClick = function (evt, picture) {
+    evt.preventDefault();
+    setPictureToGallery(picture);
+    openGallery(picture);
   };
 })();

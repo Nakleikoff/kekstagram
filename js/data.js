@@ -1,6 +1,6 @@
 'use strict';
 
-window.generatePictures = (function () {
+(function () {
   /**
    * Массив случайных комментариев
    * @constant {Array}
@@ -54,13 +54,11 @@ window.generatePictures = (function () {
    * @param {number} number - количество фотографий
    * @return {Array} - массив с данными фотографий
    */
-  var generatePicturesList = function (number) {
+  window.generatePictures = function (number) {
     var pictures = [];
     for (var i = 0; i < number; i++) {
       pictures[i] = generatePicture(i + 1);
     }
     return pictures;
   };
-
-  return generatePicturesList;
 })();
