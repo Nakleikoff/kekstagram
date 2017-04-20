@@ -144,6 +144,10 @@
 
       var controlX = evt.clientX;
 
+      /**
+       * Переместить ползунок интенсивности фильтров
+       * @param {Event} moveEvt - событие
+       */
       var onMouseMove = function (moveEvt) {
         moveEvt.preventDefault();
 
@@ -155,6 +159,10 @@
         controlX = moveEvt.clientX;
       };
 
+      /**
+       * Отпустить ползунок интенсивности фильтров
+       * @param {Event} upEvt - событие
+       */
       var onMouseUp = function (upEvt) {
         upEvt.preventDefault();
 
