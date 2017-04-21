@@ -8,8 +8,16 @@
   var FILTER_DEFAULT = 'none';
 
   /**
+   * Тип функции для установки интенсивности фильтра на элемент
+   * @typedef applyIntensity
+   * @type {function}
+   * @param {Element} element - элемент для установки интенсивности
+   * @param {number} value - значение интенсивности
+   */
+
+  /**
    * Объект с функциями описываюищими применение фильтра
-   * @constant {Object}
+   * @constant {Object<string, applyIntensity>}
    */
   var FILTERS_INTENSITY = {
     none: function (element, value) {
