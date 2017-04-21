@@ -50,7 +50,7 @@
     },
   };
 
-  var preview;
+  var preview = null;
   var current = FILTER_DEFAULT;
   var intensity = INTENSITY_DEFAULT;
 
@@ -71,11 +71,7 @@
     preview.classList.remove('filter-' + current);
     preview.classList.add('filter-' + filter);
     current = filter;
-    if (current === FILTER_DEFAULT) {
-      hideIntensityBar();
-    } else {
-      showIntensityBar();
-    }
+    window.utils.setVisible(current === FILTER_DEFAULT);
     intensity = INTENSITY_DEFAULT;
     applyIntensity(INTENSITY_DEFAULT);
   };
@@ -105,20 +101,6 @@
     if (FILTERS_INTENSITY[current]) {
       FILTERS_INTENSITY[current](preview, value);
     }
-  };
-
-  /**
-   * Показать ползунок интенсивности фильтра
-   */
-  var showIntensityBar = function () {
-    intensityLevel.style.display = 'block';
-  };
-
-  /**
-   * Скрыть ползунок интенсивности фильтра
-   */
-  var hideIntensityBar = function () {
-    intensityLevel.style.display = 'none';
   };
 
   /**
@@ -154,7 +136,7 @@
         var shiftX = controlX - moveEvt.clientX;
 
         intensity = intensity - shiftX / intensityLine.clientWidth * 100;
-        intensity = Math.min(Math.max(intensity, INTENSITY_MIN), INTENSITY_MAX);
+        intensity = window.utils.clamp(intensity, INTENSITY_MIN, INTENSITY_MAX);
         applyIntensity(intensity);
         controlX = moveEvt.clientX;
       };
