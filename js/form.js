@@ -14,12 +14,6 @@
   var COMMENT_MAX_LENGTH = 100;
 
   /**
-   * Значение по умолчанию для масштаба изображения
-   * @constant {number}
-   */
-  var FILTER_DEFAULT = 'none';
-
-  /**
    * Минимальное значение масштаба изображения
    * @constant {number}
    */
@@ -53,8 +47,6 @@
   var uploadComment = uploadCrop.querySelector('.upload-form-description');
 
   var uploadPreview = uploadCrop.querySelector('.filter-image-preview');
-  var uploadFilters = uploadCrop.querySelector('.upload-filter-controls');
-  var currentFilter;
 
   var resizeValue = uploadCrop.querySelector('.upload-resize-controls-value');
   var resizeInc = uploadCrop.querySelector('.upload-resize-controls-button-inc');
@@ -84,38 +76,6 @@
   var closeUploadCrop = function () {
     uploadCrop.classList.add('invisible');
     document.removeEventListener('keydown', onUploadCropEscPress);
-  };
-
-  /**
-   * Применить фильтр к изображению
-   * @param {string} filter - выбранный фильтр
-   */
-  var applyFilter = function (filter) {
-    if (currentFilter) {
-      uploadPreview.classList.remove(currentFilter);
-    }
-    currentFilter = 'filter-' + filter;
-    uploadPreview.classList.add(currentFilter);
-  };
-
-  /**
-   * Сбросить фильтр изображения
-   */
-  var resetFilter = function () {
-    if (!currentFilter) {
-      return;
-    }
-    uploadPreview.classList.remove(currentFilter);
-    currentFilter = null;
-    uploadFilters.querySelector('#upload-filter-' + FILTER_DEFAULT).checked = true;
-  };
-
-  /**
-   * Изменить фильтр
-   * @param {Event} evt - событие
-   */
-  var onFilterChange = function (evt) {
-    applyFilter(evt.target.value);
   };
 
   /**
@@ -167,7 +127,7 @@
    */
   var resetForm = function () {
     resetComment();
-    resetFilter();
+    window.filters.reset();
     resetResize();
   };
 
@@ -233,11 +193,10 @@
     }
   });
 
-  uploadFilters.addEventListener('change', onFilterChange);
-
   resizeInc.addEventListener('click', onResizeIncClick);
   resizeDec.addEventListener('click', onResizeDecClick);
 
   uploadForm.classList.remove('invisible');
+  window.filters.init(uploadCrop);
   closeUploadCrop();
 })();

@@ -1,17 +1,36 @@
 'use strict';
 
 (function () {
-  /**
-   * Код клавишы ESC
-   * @constant {number}
-   */
-  var ESC_KEY_CODE = 27;
 
   /**
    * Объект со вспомогательными утилитами
    * @type {Utils}
    */
   window.utils = {
-    ESC_KEY_CODE: ESC_KEY_CODE
+    /**
+     * Код клавишы ESC
+     * @constant {number}
+     */
+    ESC_KEY_CODE: 27,
+
+    /**
+     * Ограничить значение минимумом и максимумом
+     * @param {number} value - значение
+     * @param {number} min - минимально допустимое значение
+     * @param {number} max - максимально допустимое значение
+     * @return {number} - ограниченное значение
+     */
+    clamp: function (value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    },
+
+    /**
+     * Изменить видимость элемента
+     * @param {Element} element - элемент страницы
+     * @param {boolean} visible - параметр видимости элемента
+     */
+    setVisible: function (element, visible) {
+      element.classList.toggle('invisible', !visible);
+    }
   };
 })();
