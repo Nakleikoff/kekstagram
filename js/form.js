@@ -193,11 +193,10 @@
     }
   });
 
-
   resizeInc.addEventListener('click', onResizeIncClick);
   resizeDec.addEventListener('click', onResizeDecClick);
 
   uploadForm.classList.remove('invisible');
-  window.filters.init(uploadPreview);
+  window.filters.init(uploadCrop);
   closeUploadCrop();
 })();

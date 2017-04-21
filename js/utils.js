@@ -30,7 +30,7 @@
      * @param {boolean} visible - параметр видимости элемента
      */
     setVisible: function (element, visible) {
-      element.classList.toggle('visible', visible);
+      element.classList.toggle('invisible', !visible);
     }
   };
 })();

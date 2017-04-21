@@ -8,24 +8,6 @@
   var FILTER_DEFAULT = 'none';
 
   /**
-   * Значение по умолчанию для интенсивности фильтра
-   * @constant {number}
-   */
-  var INTENSITY_DEFAULT = 100;
-
-  /**
-   * Минимальное значение интенсивности фильтра
-   * @constant {number}
-   */
-  var INTENSITY_MIN = 0;
-
-  /**
-   * Максимальное значение интенсивности фильтра
-   * @constant {number}
-   */
-  var INTENSITY_MAX = 100;
-
-  /**
    * Объект с функциями описываюищими применение фильтра
    * @constant {Object}
    */
@@ -51,17 +33,21 @@
   };
 
   var preview = null;
+  var filters = null;
+  var defaultFilter = null;
   var current = FILTER_DEFAULT;
-  var intensity = INTENSITY_DEFAULT;
 
-  var form = document.querySelector('.upload-filter');
-  var filters = form.querySelector('.upload-filter-controls');
-  var defaultFilter = filters.querySelector('#upload-filter-' + FILTER_DEFAULT);
+  /**
+   * Установить элементы управления фильтрами
+   * @param {Element} form - форма управления фильтрами
+   */
+  var initElements = function (form) {
+    preview = form.querySelector('.filter-image-preview');
+    filters = form.querySelector('.upload-filter-controls');
+    defaultFilter = filters.querySelector('#upload-filter-' + FILTER_DEFAULT);
 
-  var intensityLevel = form.querySelector('.upload-filter-level');
-  var intensityLine = intensityLevel.querySelector('.upload-filter-level-line');
-  var intensityBar = intensityLine.querySelector('.upload-filter-level-val');
-  var intensityPin = intensityLine.querySelector('.upload-filter-level-pin');
+    filters.addEventListener('change', onFilterChange);
+  };
 
   /**
    * Применить фильтр к изображению
@@ -71,17 +57,8 @@
     preview.classList.remove('filter-' + current);
     preview.classList.add('filter-' + filter);
     current = filter;
-    window.utils.setVisible(current === FILTER_DEFAULT);
-    intensity = INTENSITY_DEFAULT;
-    applyIntensity(INTENSITY_DEFAULT);
-  };
-
-  /**
-   * Сбросить фильтр изображения
-   */
-  var resetFilters = function () {
-    defaultFilter.checked = true;
-    applyFilter(FILTER_DEFAULT);
+    window.intensity.setVisible(current !== FILTER_DEFAULT);
+    window.intensity.resetValue();
   };
 
   /**
@@ -97,68 +74,26 @@
    * @param {number} value - значение интенсивности
    */
   var applyIntensity = function (value) {
-    drawIntensityBar(value);
-    if (FILTERS_INTENSITY[current]) {
-      FILTERS_INTENSITY[current](preview, value);
-    }
-  };
-
-  /**
-   * Нарисовать ползунок интенсивности фильтра
-   * @param {number} value - значение интенсивности
-   */
-  var drawIntensityBar = function (value) {
-    intensityPin.style.left = value + '%';
-    intensityBar.style.width = value + '%';
-  };
-
-  /**
-   * Инициализивароть фильтры
-   * @param {Element} element - элемент для применения фильтров
-   */
-  var initFilters = function (element) {
-    preview = element;
-    applyFilter(FILTER_DEFAULT);
-    filters.addEventListener('change', onFilterChange);
-
-    intensityPin.addEventListener('mousedown', function (evt) {
-      evt.preventDefault();
-
-      var controlX = evt.clientX;
-
-      /**
-       * Переместить ползунок интенсивности фильтров
-       * @param {Event} moveEvt - событие
-       */
-      var onMouseMove = function (moveEvt) {
-        moveEvt.preventDefault();
-
-        var shiftX = controlX - moveEvt.clientX;
-
-        intensity = intensity - shiftX / intensityLine.clientWidth * 100;
-        intensity = window.utils.clamp(intensity, INTENSITY_MIN, INTENSITY_MAX);
-        applyIntensity(intensity);
-        controlX = moveEvt.clientX;
-      };
-
-      /**
-       * Отпустить ползунок интенсивности фильтров
-       * @param {Event} upEvt - событие
-       */
-      var onMouseUp = function (upEvt) {
-        upEvt.preventDefault();
-
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onMouseUp);
-      };
-
-      document.addEventListener('mousemove', onMouseMove);
-      document.addEventListener('mouseup', onMouseUp);
-    });
+    FILTERS_INTENSITY[current](preview, value);
   };
 
   window.filters = {
-    init: initFilters,
-    reset: resetFilters
+    /**
+     * Инициализивароть фильтры
+     * @param {Element} form - элемент формы с фильтрами
+     */
+    init: function (form) {
+      initElements(form);
+      window.intensity.init(form, applyIntensity);
+      applyFilter(FILTER_DEFAULT);
+    },
+
+    /**
+     * Сбросить фильтр изображения
+     */
+    reset: function () {
+      defaultFilter.checked = true;
+      applyFilter(FILTER_DEFAULT);
+    }
   };
 })();
