@@ -7,17 +7,24 @@
    */
   var FILTER_DEFAULT = 'none';
 
+  var filters = null;
+  var defaultFilter = null;
+  var current = FILTER_DEFAULT;
+
+  var onFilterChange = null;
+  var onIntensityChange = null;
+
   /**
    * Тип функции для установки интенсивности фильтра на элемент
    * @typedef applyIntensity
-   * @type {function}
+   * @type {Function}
    * @param {Element} element - элемент для установки интенсивности
    * @param {number} value - значение интенсивности
    */
 
   /**
    * Объект с функциями описываюищими применение фильтра
-   * @constant {Object<string, applyIntensity>}
+   * @constant {Object.<string, applyIntensity>}
    */
   var FILTERS_INTENSITY = {
     none: function (element, value) {
@@ -40,21 +47,17 @@
     },
   };
 
-  var preview = null;
-  var filters = null;
-  var defaultFilter = null;
-  var current = FILTER_DEFAULT;
-
   /**
    * Установить элементы управления фильтрами
    * @param {Element} form - форма управления фильтрами
    */
   var initElements = function (form) {
-    preview = form.querySelector('.filter-image-preview');
     filters = form.querySelector('.upload-filter-controls');
     defaultFilter = filters.querySelector('#upload-filter-' + FILTER_DEFAULT);
 
-    filters.addEventListener('change', onFilterChange);
+    filters.addEventListener('change', function (evt) {
+      applyFilter(evt.target.value);
+    });
   };
 
   /**
@@ -62,36 +65,35 @@
    * @param {string} filter - выбранный фильтр
    */
   var applyFilter = function (filter) {
-    preview.classList.remove('filter-' + current);
-    preview.classList.add('filter-' + filter);
+    if (typeof onFilterChange === 'function') {
+      onFilterChange(current, filter);
+    }
     current = filter;
     window.intensity.setVisible(current !== FILTER_DEFAULT);
     window.intensity.resetValue();
   };
 
   /**
-   * Изменить фильтр
-   * @param {Event} evt - событие
-   */
-  var onFilterChange = function (evt) {
-    applyFilter(evt.target.value);
-  };
-
-  /**
-   * Применить значение интенсивности фильтра
-   * @param {number} value - значение интенсивности
+   * Применить интенсивность фильтра
+   * @param {number} value - текущая интенсивность
    */
   var applyIntensity = function (value) {
-    FILTERS_INTENSITY[current](preview, value);
+    if (typeof onIntensityChange === 'function') {
+      onIntensityChange(FILTERS_INTENSITY[current], value);
+    }
   };
 
   window.filters = {
     /**
      * Инициализивароть фильтры
      * @param {Element} form - элемент формы с фильтрами
+     * @param {Function} filterCallback - функция для применения фильтра к элементу
+     * @param {Function} intensityCallback - функция для применения интенсивности фильтра к элементу
      */
-    init: function (form) {
+    init: function (form, filterCallback, intensityCallback) {
       initElements(form);
+      onFilterChange = filterCallback;
+      onIntensityChange = intensityCallback;
       window.intensity.init(form, applyIntensity);
       applyFilter(FILTER_DEFAULT);
     },
