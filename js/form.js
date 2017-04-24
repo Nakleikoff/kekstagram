@@ -13,30 +13,6 @@
    */
   var COMMENT_MAX_LENGTH = 100;
 
-  /**
-   * Минимальное значение масштаба изображения
-   * @constant {number}
-   */
-  var RESIZE_MIN = 25;
-
-  /**
-   * Максимальное значение масштаба изображения
-   * @constant {number}
-   */
-  var RESIZE_MAX = 100;
-
-  /**
-   * Шаг изменения масштаба изображения
-   * @constant {number}
-   */
-  var RESIZE_STEP = 25;
-
-  /**
-   * Значение по умолчанию для масштаба изображения
-   * @constant {number}
-   */
-  var RESIZE_DEFAULT = 100;
-
   var upload = document.querySelector('.upload');
   var uploadForm = upload.querySelector('.upload-form');
   var uploadFileInput = uploadForm.querySelector('#upload-file');
@@ -47,10 +23,6 @@
   var uploadComment = uploadCrop.querySelector('.upload-form-description');
 
   var uploadPreview = uploadCrop.querySelector('.filter-image-preview');
-
-  var resizeValue = uploadCrop.querySelector('.upload-resize-controls-value');
-  var resizeInc = uploadCrop.querySelector('.upload-resize-controls-button-inc');
-  var resizeDec = uploadCrop.querySelector('.upload-resize-controls-button-dec');
 
   /**
    * Нажать ESC на форме редактирования изображения
@@ -79,11 +51,22 @@
   };
 
   /**
-   * Получить масштаб изображения
-   * @return {number} - масштаб
+   * Изменить фильтр изображения
+   * @param {string} oldFilter - предыдущий фильтр
+   * @param {string} newFilter - новый фильтр
    */
-  var getResizeValue = function () {
-    return parseInt(resizeValue.value, 10);
+  var changeFilter = function (oldFilter, newFilter) {
+    uploadPreview.classList.remove('filter-' + oldFilter);
+    uploadPreview.classList.add('filter-' + newFilter);
+  };
+
+  /**
+   * Изменить интенсивность фильтра
+   * @param {Function} intensityFunction - функция для изменения интенсивности
+   * @param {number} intensity - значение интенсивности
+   */
+  var changeIntensity = function (intensityFunction, intensity) {
+    intensityFunction(uploadPreview, intensity);
   };
 
   /**
@@ -95,49 +78,12 @@
   };
 
   /**
-   * Нажать на кнопку увеличения масштаба
-   */
-  var onResizeIncClick = function () {
-    var value = getResizeValue();
-    value = Math.min(value + RESIZE_STEP, RESIZE_MAX);
-    resizeValue.value = value + '%';
-    resizeImage(value);
-  };
-
-  /**
-   * Нажать на кнопку уменьшения масштаба
-   */
-  var onResizeDecClick = function () {
-    var value = getResizeValue();
-    value = Math.max(value - RESIZE_STEP, RESIZE_MIN);
-    resizeValue.value = value + '%';
-    resizeImage(value);
-  };
-
-  /**
-   * Сбросить масштабирование изображения
-   */
-  var resetResize = function () {
-    resizeValue.value = RESIZE_DEFAULT + '%';
-    resizeImage(RESIZE_DEFAULT);
-  };
-
-  /**
    * Сбросить данные формы редактирования
    */
   var resetForm = function () {
     resetComment();
     window.filters.reset();
-    resetResize();
-  };
-
-  /**
-   * Проверить валидность масштаба
-   * @return {boolean}
-   */
-  var isResizeValid = function () {
-    var value = getResizeValue();
-    return value >= RESIZE_MIN && value <= RESIZE_MAX && value % 2 === 0;
+    window.scale.reset();
   };
 
   /**
@@ -168,11 +114,8 @@
       valid = false;
       uploadComment.classList.add('upload-form-error');
     }
-    if (isResizeValid()) {
-      resizeValue.classList.remove('upload-form-error');
-    } else {
+    if (!window.scale.checkValidity()) {
       valid = false;
-      resizeValue.classList.add('upload-form-error');
     }
     return valid;
   };
@@ -193,10 +136,8 @@
     }
   });
 
-  resizeInc.addEventListener('click', onResizeIncClick);
-  resizeDec.addEventListener('click', onResizeDecClick);
-
   uploadForm.classList.remove('invisible');
-  window.filters.init(uploadCrop);
+  window.filters.init(uploadCrop, changeFilter, changeIntensity);
+  window.scale.init(uploadCrop, resizeImage);
   closeUploadCrop();
 })();
