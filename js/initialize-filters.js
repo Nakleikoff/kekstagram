@@ -24,7 +24,7 @@
 
   /**
    * Объект с функциями описываюищими применение фильтра
-   * @constant {Object.<string, applyIntensity>}
+   * @constant {Object<string, applyIntensity>}
    */
   var FILTERS_INTENSITY = {
     none: function (element, value) {

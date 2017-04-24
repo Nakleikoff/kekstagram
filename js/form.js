@@ -65,7 +65,7 @@
    * @param {Function} intensityFunction - функция для изменения интенсивности
    * @param {number} intensity - значение интенсивности
    */
-  var changeFilterIntensity = function (intensityFunction, intensity) {
+  var changeIntensity = function (intensityFunction, intensity) {
     intensityFunction(uploadPreview, intensity);
   };
 
@@ -137,7 +137,7 @@
   });
 
   uploadForm.classList.remove('invisible');
-  window.filters.init(uploadCrop, changeFilter, changeFilterIntensity);
+  window.filters.init(uploadCrop, changeFilter, changeIntensity);
   window.scale.init(uploadCrop, resizeImage);
   closeUploadCrop();
 })();
