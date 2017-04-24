@@ -1,13 +1,14 @@
 'use strict';
 
 (function () {
+
   /**
-   * Количество генерируемых изображений
-   * @constant {number}
+   * Отрисовать полученные изображения
+   * @param {Array} pictures - массив с изображениями
    */
-  var NUMBER_OF_PICTURES = 25;
+  var onGetPictures = function (pictures) {
+    window.renderPicturesList(pictures, window.onGalleryOpenerClick);
+  };
 
-  var pictures = window.generatePictures(NUMBER_OF_PICTURES);
-
-  window.renderPicturesList(pictures, window.onGalleryOpenerClick);
+  window.getPictures(onGetPictures);
 })();
