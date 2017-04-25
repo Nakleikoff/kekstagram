@@ -3,6 +3,27 @@
 (function () {
 
   /**
+   * Код успешного ответа
+   * @constant {number}
+   */
+  var SUCCESS_CODE = 200;
+
+  /**
+   * Объект с кодами ошибок
+   * @constant {Object<number, string>}
+   */
+  var ERROR_CODES = {
+    400: 'Неверный запрос',
+    401: 'Пользователь не авторизован',
+    403: 'Доступ запрещён',
+    404: 'Ничего не найдено',
+    500: 'Внутренняя ошибка сервера',
+    502: 'Ошибочный шлюз',
+    503: 'Сервис недоступен',
+    504: 'Сервер не отвечает',
+  };
+
+  /**
    * Получить данные по запрошенному адресу
    * @param {string} url - url с данными
    * @param {Function} onSuccess - функция для обработки полученных данных
@@ -13,10 +34,14 @@
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
-      if (xhr.status === 200) {
+      if (xhr.status === SUCCESS_CODE) {
         onSuccess(xhr.response);
       } else {
-        onError('Неизвестный статус: ' + xhr.status + ' ' + xhr.statusText);
+        if (ERROR_CODES[xhr.status]) {
+          onError(ERROR_CODES[xhr.status]);
+        } else {
+          onError('Неизвестный статус: ' + xhr.status + ' ' + xhr.statusText);
+        }
       }
     });
     xhr.addEventListener('error', function () {

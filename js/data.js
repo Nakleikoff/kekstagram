@@ -5,13 +5,13 @@
    * Url с данными изображений
    * @constant {string}
    */
-  var DATA_URL = 'https://intensive-javascript-server-kjgvxfepjl.now.sh/kekstagram';
+  var DATA_URL = 'https://intensive-javascript-server-kjgvxfepjl.now.sh/kekstagram/data';
 
   /**
    * Получить массив фотографий
-   * @param {Function} onGetPictures - функция для обработки полученных изображений
+   * @param {Function} onPicturesLoad - функция для обработки полученных изображений
    */
-  window.getPictures = function (onGetPictures) {
-    window.load(DATA_URL, onGetPictures, window.message);
+  window.getPictures = function (onPicturesLoad) {
+    window.load(DATA_URL, onPicturesLoad, window.message);
   };
 })();
