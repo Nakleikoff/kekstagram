@@ -46,12 +46,10 @@
   });
 
   /**
-   * Обработать нажатие на элемент открывающий галерею
-   * @param {Event} evt - событие
+   * Открыть превью изображения
    * @param {Object} picture - объект с данными фотографии
    */
-  window.onGalleryOpenerClick = function (evt, picture) {
-    evt.preventDefault();
+  window.openPicturePreview = function (picture) {
     setPictureToGallery(picture);
     openGallery(picture);
   };
