@@ -17,7 +17,9 @@
    * @param {Array} pictures - массив с изображениями
    */
   var onGetPictures = function (pictures) {
-    window.renderPicturesList(pictures, onPictureOpen);
+    window.sorters.init(pictures, function (data) {
+      window.renderPicturesList(data, onPictureOpen);
+    });
   };
 
   window.getPictures(onGetPictures);
