@@ -33,7 +33,9 @@
   var filters = document.querySelector('.filters');
 
   filters.addEventListener('change', function (evt) {
-    applyFilter(evt.target.value);
+    window.debounce(function () {
+      applyFilter(evt.target.value);
+    });
   });
 
   var data = null;
@@ -45,9 +47,7 @@
    */
   var applyFilter = function (filter) {
     if (typeof onFilter === 'function') {
-      window.debounce(function () {
-        onFilter(FILTERS[filter]());
-      });
+      onFilter(FILTERS[filter]());
     }
   };
 
