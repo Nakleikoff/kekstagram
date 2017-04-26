@@ -1,13 +1,24 @@
 'use strict';
 
 (function () {
+
   /**
-   * Количество генерируемых изображений
-   * @constant {number}
+   * Обработать открытие изображения
+   * @param {Event} evt - событие
+   * @param {Object} picture - изображение
    */
-  var NUMBER_OF_PICTURES = 25;
+  var onPictureOpen = function (evt, picture) {
+    evt.preventDefault();
+    window.openPicturePreview(picture);
+  };
 
-  var pictures = window.generatePictures(NUMBER_OF_PICTURES);
+  /**
+   * Отрисовать полученные изображения
+   * @param {Array} pictures - массив с изображениями
+   */
+  var onGetPictures = function (pictures) {
+    window.renderPicturesList(pictures, onPictureOpen);
+  };
 
-  window.renderPicturesList(pictures, window.onGalleryOpenerClick);
+  window.getPictures(onGetPictures);
 })();
