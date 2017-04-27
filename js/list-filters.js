@@ -37,7 +37,7 @@
     discussed: function (data) {
       var list = data.slice(0);
       return list.sort(function (first, second) {
-        return first.comments.length - second.comments.length;
+        return second.comments.length - first.comments.length;
       });
     }
   };
