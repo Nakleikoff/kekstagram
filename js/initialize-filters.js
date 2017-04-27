@@ -83,7 +83,7 @@
     }
   };
 
-  window.filters = {
+  window.elementFilters = {
     /**
      * Инициализивароть фильтры
      * @param {Element} form - элемент формы с фильтрами
