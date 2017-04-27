@@ -82,7 +82,7 @@
    */
   var resetForm = function () {
     resetComment();
-    window.filters.reset();
+    window.elementFilters.reset();
     window.scale.reset();
   };
 
@@ -137,7 +137,7 @@
   });
 
   uploadForm.classList.remove('invisible');
-  window.filters.init(uploadCrop, changeFilter, changeIntensity);
+  window.elementFilters.init(uploadCrop, changeFilter, changeIntensity);
   window.scale.init(uploadCrop, resizeImage);
   closeUploadCrop();
 })();

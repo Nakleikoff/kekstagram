@@ -37,11 +37,7 @@
       if (xhr.status === SUCCESS_CODE) {
         onSuccess(xhr.response);
       } else {
-        if (ERROR_CODES[xhr.status]) {
-          onError(ERROR_CODES[xhr.status]);
-        } else {
-          onError('Неизвестный статус: ' + xhr.status + ' ' + xhr.statusText);
-        }
+        onError(ERROR_CODES[xhr.status] || ('Неизвестный статус: ' + xhr.status + ' ' + xhr.statusText));
       }
     });
     xhr.addEventListener('error', function () {

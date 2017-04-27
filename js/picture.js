@@ -33,6 +33,7 @@
     for (var i = 0; i < pictures.length; i++) {
       fragment.appendChild(renderPicture(pictures[i], onPictureClick));
     }
+    picturesContainer.innerHTML = '';
     picturesContainer.appendChild(fragment);
   };
 })();
