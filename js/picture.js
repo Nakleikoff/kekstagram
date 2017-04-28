@@ -30,9 +30,9 @@
    */
   window.renderPicturesList = function (pictures, onPictureClick) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < pictures.length; i++) {
-      fragment.appendChild(renderPicture(pictures[i], onPictureClick));
-    }
+    pictures.forEach(function (picture) {
+      fragment.appendChild(renderPicture(picture, onPictureClick));
+    });
     picturesContainer.innerHTML = '';
     picturesContainer.appendChild(fragment);
   };
